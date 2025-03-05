@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Post;
+use App\Mail\Postsend;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Requests\postrequst;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
@@ -35,8 +37,10 @@ class HomeController extends Controller
     public function store(postrequst $request)
     {
          $validated=$request->validated();
-        Post::create($validated);
-        return redirect('/posts');
+         $post = Post::create($validated);
+
+        
+        return redirect('/posts')->with('status', ' Post created was Success');
     }
 
     /**
@@ -55,7 +59,7 @@ class HomeController extends Controller
     public function edit(Post $post)
     {
         $category = Category::all();
-        return view('edit' ,compact('post','category'));
+        return view('edit' ,compact('post','category'))->with('status', ' Post edited was Success');
     }
 
     /**
@@ -65,6 +69,8 @@ class HomeController extends Controller
     {
         $validated=$request->validated();
         $post->update($validated);
+
+
         return redirect('/posts');
     }
 
@@ -74,6 +80,6 @@ class HomeController extends Controller
     public function destroy(Post $post)
     {
         $post->delete();
-        return redirect('/posts');
+        return redirect('/posts')->with('status', ' Post Deleted was Success');
     }
 }
